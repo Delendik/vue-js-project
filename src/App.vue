@@ -1,104 +1,50 @@
 <template>
-  <div class="page-cards">
-    <div class="buttons">
-      <v-btn
-        depressed
-        color="#19b2e6"
-        v-on:click="firstButton"
-      >
-        Группа 1
-      </v-btn>
-      <v-btn
-        depressed
-        color="#19b2e6"
-        v-on:click="secondButton"
-      >
-        Группа 2
-      </v-btn>
-      <v-btn
-        depressed
-        color="#19b2e6"
-        v-on:click="thirdButton"
-      >
-        Группа 3
-      </v-btn>
-      <v-btn
-        depressed
-        color="#19b2e6"
-        v-on:click="fourthButton"
-      >
-        Группа 4
-      </v-btn>
+  <div class="page">
+    <v-progress-circular
+      class="loading"
+      :size="200"
+      :width="7"
+      color="#800080"
+      indeterminate
+      v-if="!show"
+    ></v-progress-circular>
+    <v-card class="overflow-hidden" v-if="show">
+      <v-app-bar color="#b1cff1">
+        <v-app-bar-nav-icon @click="showMenu = !showMenu" v-on:click="handleClick" />
+        <v-toolbar-title >Burger-menu</v-toolbar-title>
+      </v-app-bar>
+    </v-card>
+    <div class="menu-container" v-if="showMenu">
+      <img :src="avatar" alt="фото автора" class="menu-photo" /> 
+      <p class="menu-title">Алексей</p>
+      <p class="menu-subtitle">delendikalexey@gmail.com</p>
+      <a href="/" class="menu-link">Галерея</a>
+      <a href="/about" class="menu-link">Обо мне</a>
     </div>
-    <div id="app" class="cards-container">
-      <div v-for="card in cardsForRender" :key="card.id">
-        <v-hover>
-          <template v-slot:default="{ hover }">
-            <v-card
-              class="mx-auto"
-              max-width="344"
-            >
-              <v-img :src="card.url"></v-img>
-              <v-card-text>
-                <h2>
-                  {{card.title}}
-                </h2>
-              </v-card-text>
-
-              <v-fade-transition>
-                <v-overlay
-                  v-if="hover"
-                  absolute
-                  color="#036358"
-                >
-                  <v-btn>Подробнее</v-btn>
-                </v-overlay>
-              </v-fade-transition>
-            </v-card>
-          </template>
-        </v-hover>
-      </div>
-    </div>
+    <router-view v-if="show"/>
   </div>
+  
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-import {mapGetters, mapActions} from 'vuex'
+import avatar from './images/author.jpg'
 export default {
   name: 'App',
-  components: {
-    // HelloWorld
-  },
-
-  computed: {
-    ...mapGetters(['firstGroup', 'secondGroup', 'thirdGroup', 'fourthGroup']),
-  },
-  
   data() {
-      return{
-        cardsForRender: [],
-      }
-    },
-
-  methods: {
-    ...mapActions(['getCards']),
-    firstButton(){
-      this.cardsForRender = this.firstGroup;
-    },
-    secondButton(){
-      this.cardsForRender = this.secondGroup;
-    },
-    thirdButton(){
-      this.cardsForRender = this.thirdGroup;
-    },
-    fourthButton(){
-      this.cardsForRender = this.fourthGroup;
+    return{
+      showMenu: false,
+      show: false,
+      avatar
     }
   },
-    async mounted() {
-      this.getCards();
-    },  
+  methods: {
+    handleClick() {
+      console.log(this.showMenu)
+    }
+  },
+  mounted() {
+    setTimeout(() => this.show = true, 500);
+  },  
 }
 </script>
 
@@ -110,19 +56,48 @@ export default {
     text-align: center;
     color: #2c3e50;
     margin-top: 60px;
+    
   }
 
-  .cards-container{
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 300px);
-    grid-gap: 20px;
+  .page{
+    height: 100vh;
+    background-color: rgb(201, 228, 247);
+  }
+  
+  .menu-container{
+    width: 200px;
+    height: 400px;
+    position: absolute;
+    z-index: 5;
+    background-color: #b1cff1;
+    top: 80px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
   }
 
-  .buttons{
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    padding: 20px 0;
+  .menu-photo{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-top: 10px;
+  }
+
+  .menu-title{
+    font-size: 20px;
+    margin: 10px 0;
+  }
+
+  .menu-subtitle{
+    margin: 10px 0;
+  }
+
+  .menu-link{
+    text-decoration: none;
+    margin: 10px 0;
+    font-size: 25px;
+    font-weight: 700;
   }
 </style>
